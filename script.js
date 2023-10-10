@@ -12,49 +12,79 @@ Styling
 
 */
 
-const APIKEY = "859d1c6268a1c95a2e2ded0c95483c8a";
-const url = "https://api.openweathermap.org/data/2.5/weather/";
+const APIKEY = '859d1c6268a1c95a2e2ded0c95483c8a'
+const url = 'https://api.openweathermap.org/data/2.5/weather/'
 
-const currentWeather = document.getElementById("currentWeather");
-const comment = document.getElementById("comment");
-const additionalData = document.getElementById("additionalData");
-const sunTime = document.getElementById("sunTime");
-const forecast = document.getElementById("forecast");
-const locations = document.getElementById("locations");
+const currentWeather = document.getElementById('currentWeather')
+const comment = document.getElementById('comment')
+const additionalData = document.getElementById('additionalData')
+const sunTime = document.getElementById('sunTime')
+const forecast = document.getElementById('forecast')
+const locations = document.getElementById('locations')
 
-const fetchWeather = (param) => {
+const fetchWeather = param => {
   fetch(url + param)
     .then(response => response.json())
-    .then((data) => {
-      console.log(data);
+    .then(data => {
+      console.log(data)
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(error => {
+      console.log(error)
     })
 }
 
-const getCurrentWeather = (param) => {
+const getCurrentWeather = param => {
   fetch(url + param)
     .then(response => response.json())
-    .then((data) => {
+    .then(data => {
       currentWeather.innerHTML = `
       <h2>${data.name}</h2>
-      <p>${data.weather[0].description} | ${Math.round(data.main.temp)} °C</p>`;
+      <p>${data.weather[0].description} | ${Math.round(data.main.temp)} °C</p>`
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(error => {
+      console.log(error)
     })
   // Preeti Additional weather data
 }
 
-const getSunTime = () => {
-  // Preeti
+// getSunTime function to correctly update the DOM elements
+const getSunTime = param => {
+  fetch(url + param)
+    .then(response => response.json())
+    .then(data => {
+      const sunriseTimestamp = data.sys.sunrise * 1000; // Convert to milliseconds
+      const sunsetTimestamp = data.sys.sunset * 1000; // Convert to milliseconds
+
+      const sunrise = new Date(sunriseTimestamp);
+      const sunset = new Date(sunsetTimestamp);
+
+      const sunriseTime = sunrise.toLocaleTimeString();
+      const sunsetTime = sunset.toLocaleTimeString();
+
+      // Update the DOM elements with sunrise and sunset times
+      // document.querySelector('#sunrise span').textContent = sunriseTime;
+      // document.querySelector('#sunset span').textContent = sunsetTime;
+
+      // Calculate the duration of daylight
+      const daylightDuration = sunset - sunrise;
+      const hours = Math.floor(daylightDuration / (60 * 60 * 1000));
+      const minutes = Math.floor((daylightDuration % (60 * 60 * 1000)) / (60 * 1000));
+
+      // Update the daylight element
+      // document.querySelector('#daylight span').textContent = `${hours} hours and ${minutes} minutes`;
+      sunTime.innerHTML = `<p>Sun Time: ${hours} hours and ${minutes} minutes</p>`;
+    })
+    .catch(error => {
+      console.error('Error fetching sunrise and sunset times:', error);
+    });
 }
+
 
 const getForecast = () => {
   // Daniel
 }
 
-getCurrentWeather(`?q=Stockholm,Sweden&units=metric&APPID=${APIKEY}`);
+getCurrentWeather(`?q=Stockholm,Sweden&units=metric&APPID=${APIKEY}`)
 
-
+// Call the function to get sunrise and sunset times
+getSunTime(`?q=Stockholm,Sweden&units=metric&APPID=${APIKEY}`)

@@ -24,6 +24,8 @@ const sunTime = document.getElementById('sunTime');
 const forecast = document.getElementById('forecast');
 const search = document.getElementById('search');
 const searchbtn = document.getElementById('searchbtn');
+const minTempElement = document.getElementById('minTemp');
+const maxTempElement = document.getElementById('maxTemp');
 
 /*
 Function to fetch the current weather of a location provided in the parameter and create html to display it
@@ -143,6 +145,30 @@ const getLocation = () => {
   }
 }
 
+const getMinMaxTemp = (loc) =>  {
+  fetch(`${url}/weather?units=metric${loc}&APPID=${APIKEY}`)
+    .then(response => response.json())
+    .then(data => {
+      const minTemp = data.main.temp_min;
+      const maxTemp = data.main.temp_max;
+
+      // Check if min and max temperature data is available
+      if (minTemp !== undefined && maxTemp !== undefined) {
+        const minTemperature = Math.round(minTemp);
+        const maxTemperature = Math.round(maxTemp);
+
+        // Update the DOM elements
+        minTempElement.innerHTML = `<p>Lowest: ${minTemperature}°C</p>`;
+        maxTempElement.innerHTML = `<p>Highest: ${maxTemperature}°C</p>`;
+      } else {
+        // Handle the case where the API doesn't provide min and max temperature data
+        console.log('API does not provide min and max temperature data');
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 /*
 A helper function to run the functions required to get the weather and forecast of a location
 */
@@ -150,6 +176,7 @@ const getWeather = (loc) => {
   getCurrentWeather(loc);
   getSunTime(loc);
   getForecast(loc);
+  getMinMaxTemp(loc)
 }
 
 getLocation();

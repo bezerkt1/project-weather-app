@@ -25,7 +25,6 @@ const forecast = document.getElementById('forecast');
 const search = document.getElementById('search');
 const searchbtn = document.getElementById('searchbtn');
 
-let cweather
 /*
 Function to fetch the current weather of a location provided in the parameter and create html to display it
 */
@@ -38,10 +37,20 @@ const getCurrentWeather = (loc) => {
       currentWeather.innerHTML = `
       <h2>${data.name}</h2>
       <p>${data.weather[0].description} | ${data.main.temp.toFixed(1)} °C</p>`;
-      cweather = data;
+      switch (data.weather[0].main) {
+        case "Clouds":
+          document.body.classList = "cloudy";
+          break;
+        case "Clear":
+          document.body.classList = "clear";
+          break;
+        default:
+          document.body.classList = "rain";
+      }
     })
     .catch(error => {
       console.log('Error in getCurrentWeather()', error);
+      currentWeather.innerHTML = `<h2>Location not found</h2>`
     });
   // Preeti Additional weather data
 }
@@ -75,6 +84,7 @@ const getSunTime = (loc) => {
     })
     .catch(error => {
       console.error('Error fetching sunrise and sunset times:', error);
+      sunTime.innerHTML = '';
     });
 }
 
@@ -114,6 +124,7 @@ const getForecast = (loc) => {
     })
     .catch((error) => {
       console.log("Error in getForecast()", error);
+      forecast.innerHTML = '';
     });
 }
 
@@ -133,7 +144,7 @@ const getLocation = () => {
 }
 
 /*
-A helper function to run the functions required to get the weather and forecastof a location
+A helper function to run the functions required to get the weather and forecast of a location
 */
 const getWeather = (loc) => {
   getCurrentWeather(loc);

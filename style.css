@@ -20,9 +20,23 @@ body {
   padding: 5%;
 }
 
+.cloudy {
+  background-color: var(--cloudyBackground);
+  color: var(--cloudyColor);
+}
+
+.clear {
+  background-color: var(--clearBackground);
+  color: var(--clearColor);
+}
+
+.rain {
+  background-color: var(--rainBackground);
+  color: var(--rainColor);
+}
+
 .forecastLine {
-  border: 1px var(--clearColor);
-  border-bottom: dashed;
+  border-bottom: 1px dashed;
   height: 2em;
   clear: both;
 }

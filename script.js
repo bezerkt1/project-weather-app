@@ -12,45 +12,43 @@ Styling
 
 */
 
-const APIKEY = '859d1c6268a1c95a2e2ded0c95483c8a'
-const url = 'https://api.openweathermap.org/data/2.5/weather/'
+// URL and API KEY
+const APIKEY = '859d1c6268a1c95a2e2ded0c95483c8a';
+const url = 'https://api.openweathermap.org/data/2.5/';
 
-const currentWeather = document.getElementById('currentWeather')
-const comment = document.getElementById('comment')
-const additionalData = document.getElementById('additionalData')
-const sunTime = document.getElementById('sunTime')
-const forecast = document.getElementById('forecast')
-const locations = document.getElementById('locations')
+// HTML elements
+const currentWeather = document.getElementById('currentWeather');
+const comment = document.getElementById('comment');
+const additionalData = document.getElementById('additionalData');
+const sunTime = document.getElementById('sunTime');
+const forecast = document.getElementById('forecast');
+const search = document.getElementById('search');
+const searchbtn = document.getElementById('searchbtn');
 
-const fetchWeather = param => {
-  fetch(url + param)
-    .then(response => response.json())
-    .then(data => {
-      console.log(data)
-    })
-    .catch(error => {
-      console.log(error)
-    })
-}
-
-const getCurrentWeather = param => {
-  fetch(url + param)
+let cweather
+/*
+Function to fetch the current weather of a location provided in the parameter and create html to display it
+*/
+const getCurrentWeather = (loc) => {
+  // merge suntime and add comment, change color
+  fetch(`${url}/weather?units=metric${loc}&APPID=${APIKEY}`)
     .then(response => response.json())
     .then((data) => {
       console.log("Current weather", data);
       currentWeather.innerHTML = `
       <h2>${data.name}</h2>
       <p>${data.weather[0].description} | ${data.main.temp.toFixed(1)} °C</p>`;
+      cweather = data;
     })
     .catch(error => {
-      console.log(error)
-    })
+      console.log('Error in getCurrentWeather()', error);
+    });
   // Preeti Additional weather data
 }
 
 // getSunTime function to correctly update the DOM elements
-const getSunTime = param => {
-  fetch(url + param)
+const getSunTime = (loc) => {
+  fetch(`${url}/weather?units=metric${loc}&APPID=${APIKEY}`)
     .then(response => response.json())
     .then(data => {
       const sunriseTimestamp = data.sys.sunrise * 1000; // Convert to milliseconds
@@ -80,16 +78,19 @@ const getSunTime = param => {
     });
 }
 
-const getForecast = async () => {
+/*
+Function to fetch the forecast of a location provided in the parameter and create html to display it
+*/
+const getForecast = (loc) => {
   // Daniel
-  fetch(`https://api.openweathermap.org/data/2.5/forecast?q=Stockholm,Sweden&units=metric&APPID=${APIKEY}`)
+  fetch(`${url}/forecast?units=metric${loc}&APPID=${APIKEY}`)
     .then(response => response.json())
     .then((data) => {
       console.log("Weather forecast", data);
       forecast.innerHTML = `
       <h3>5 day forecast</h3>
       <h4>at this time on...</h4>
-      <div id="forecastTable"></div>`
+      <div id="forecastTable"></div>`;
       // The indeces of the forecast the next 24, 48, 72, 96 and 120 hours from the current weather forecast
       const dayIndex = [7, 15, 23, 31, 39];
       const forecastTable = document.getElementById("forecastTable");
@@ -107,18 +108,39 @@ const getForecast = async () => {
               <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
             </svg>
           </div>
-        </div>`
+        </div>`;
         // Not 100% sure if the wind direction is correct, comapred to openweather website and it seems to be more or less correct but I am not sure which data they are using
       });
     })
     .catch((error) => {
       console.log("Error in getForecast()", error);
-    })
+    });
 }
 
-getCurrentWeather(`?q=Stockholm,Sweden&units=metric&APPID=${APIKEY}`)
+/*
+A function that gets the location provided in the search bar, gps location or a default and gets the weather of that location
+*/
+const getLocation = () => {
+  if ((search.value !== null) && (search.value !== undefined) && (search.value !== '')) {
+    getWeather(`&q=${search.value}`);
+  } else if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      getWeather(`&lat=${position.coords.latitude}&lon=${position.coords.longitude}`);
+    });
+  } else {
+    getWeather(`&q=Stockholm,Sweden`);
+  }
+}
 
-// Call the function to get sunrise and sunset times
-getSunTime(`?q=Stockholm,Sweden&units=metric&APPID=${APIKEY}`)
-getForecast();
+/*
+A helper function to run the functions required to get the weather and forecastof a location
+*/
+const getWeather = (loc) => {
+  getCurrentWeather(loc);
+  getSunTime(loc);
+  getForecast(loc);
+}
 
+getLocation();
+search.addEventListener('change', getLocation);
+searchbtn.addEventListener('click', getLocation);

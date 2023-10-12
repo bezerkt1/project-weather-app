@@ -16,6 +16,10 @@
   src: url(Montserrat-VariableFont_wght.ttf);
 }
 
+body {
+  padding: 5%;
+}
+
 .forecastLine {
   border: 1px var(--clearColor);
   border-bottom: dashed;

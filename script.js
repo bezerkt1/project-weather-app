@@ -42,12 +42,21 @@ const getCurrentWeather = (loc) => {
       switch (data.weather[0].main) {
         case "Clouds":
           document.body.classList = "cloudy";
+          comment.innerHTML = `
+          <img src="/img/cloudy.png" alt="a small cloud">
+          <h1>Light a fire and get cosy.<br>${data.name} is looking grey today.</h1>`;
           break;
         case "Clear":
           document.body.classList = "clear";
+          comment.innerHTML = `
+          <img src="/img/clear.png" alt="a small cloud">
+          <h1>Get your sunnies on.<br>${data.name} is looking rather great today.</h1>`;
           break;
         default:
           document.body.classList = "rain";
+          comment.innerHTML = `
+          <img src="/img/rain.png" alt="a small cloud">
+          <h1>Don't forget your umbrella.<br>It's wet in ${data.name} today.</h1>`;
       }
       getSunTime(data);
       getMinMaxTemp(data);

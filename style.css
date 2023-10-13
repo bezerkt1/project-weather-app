@@ -35,18 +35,25 @@ body {
   color: var(--rainColor);
 }
 
+#search,
+#searchbtn {
+  color: inherit;
+  padding: 5px;
+}
+
 .forecastLine {
   border-bottom: 1px dashed;
-  height: 2em;
-  clear: both;
+  display: flex;
+  flex-direction: row;
 }
 
 .forecastDate {
-  float: left;
+  width: 50%;
 }
 
 .forecastInfo {
-  float: right;
+  text-align: right;
+  width: 50%;
 }
 
 .forecastIcon {

@@ -49,6 +49,8 @@ const getCurrentWeather = (loc) => {
         default:
           document.body.classList = "rain";
       }
+      getSunTime(data);
+      getMinMaxTemp(data);
     })
     .catch(error => {
       console.log('Error in getCurrentWeather()', error);
@@ -57,37 +59,28 @@ const getCurrentWeather = (loc) => {
   // Preeti Additional weather data
 }
 
-// getSunTime function to correctly update the DOM elements
-const getSunTime = (loc) => {
-  fetch(`${url}/weather?units=metric${loc}&APPID=${APIKEY}`)
-    .then(response => response.json())
-    .then(data => {
-      const sunriseTimestamp = data.sys.sunrise * 1000; // Convert to milliseconds
-      const sunsetTimestamp = data.sys.sunset * 1000; // Convert to milliseconds
+const getSunTime = (data) => {
+  const sunriseTimestamp = data.sys.sunrise * 1000; // Convert to milliseconds
+  const sunsetTimestamp = data.sys.sunset * 1000; // Convert to milliseconds
 
-      const sunrise = new Date(sunriseTimestamp);
-      const sunset = new Date(sunsetTimestamp);
+  const sunrise = new Date(sunriseTimestamp);
+  const sunset = new Date(sunsetTimestamp);
 
-      const sunriseTime = sunrise.toLocaleTimeString();
-      const sunsetTime = sunset.toLocaleTimeString();
+  const sunriseTime = sunrise.toLocaleTimeString();
+  const sunsetTime = sunset.toLocaleTimeString();
 
-      // Update the DOM elements with sunrise and sunset times
-      // document.querySelector('#sunrise span').textContent = sunriseTime;
-      // document.querySelector('#sunset span').textContent = sunsetTime;
+  // Update the DOM elements with sunrise and sunset times
+  // document.querySelector('#sunrise span').textContent = sunriseTime;
+  // document.querySelector('#sunset span').textContent = sunsetTime;
 
-      // Calculate the duration of daylight
-      const daylightDuration = sunset - sunrise;
-      const hours = Math.floor(daylightDuration / (60 * 60 * 1000));
-      const minutes = Math.floor((daylightDuration % (60 * 60 * 1000)) / (60 * 1000));
+  // Calculate the duration of daylight
+  const daylightDuration = sunset - sunrise;
+  const hours = Math.floor(daylightDuration / (60 * 60 * 1000));
+  const minutes = Math.floor((daylightDuration % (60 * 60 * 1000)) / (60 * 1000));
 
-      // Update the daylight element
-      // document.querySelector('#daylight span').textContent = `${hours} hours and ${minutes} minutes`;
-      sunTime.innerHTML = `<p>Sun Time: ${hours} hours and ${minutes} minutes</p>`;
-    })
-    .catch(error => {
-      console.error('Error fetching sunrise and sunset times:', error);
-      sunTime.innerHTML = '';
-    });
+  // Update the daylight element
+  // document.querySelector('#daylight span').textContent = `${hours} hours and ${minutes} minutes`;
+  sunTime.innerHTML = `<p>Sun Time: ${hours} hours and ${minutes} minutes</p>`;
 }
 
 /*
@@ -145,38 +138,30 @@ const getLocation = () => {
   }
 }
 
-const getMinMaxTemp = (loc) =>  {
-  fetch(`${url}/weather?units=metric${loc}&APPID=${APIKEY}`)
-    .then(response => response.json())
-    .then(data => {
-      const minTemp = data.main.temp_min;
-      const maxTemp = data.main.temp_max;
+const getMinMaxTemp = (data) => {
+  const minTemp = data.main.temp_min;
+  const maxTemp = data.main.temp_max;
 
-      // Check if min and max temperature data is available
-      if (minTemp !== undefined && maxTemp !== undefined) {
-        const minTemperature = Math.round(minTemp);
-        const maxTemperature = Math.round(maxTemp);
+  // Check if min and max temperature data is available
+  if (minTemp !== undefined && maxTemp !== undefined) {
+    const minTemperature = Math.round(minTemp);
+    const maxTemperature = Math.round(maxTemp);
 
-        // Update the DOM elements
-        minTempElement.innerHTML = `<p>Lowest: ${minTemperature}°C</p>`;
-        maxTempElement.innerHTML = `<p>Highest: ${maxTemperature}°C</p>`;
-      } else {
-        // Handle the case where the API doesn't provide min and max temperature data
-        console.log('API does not provide min and max temperature data');
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    // Update the DOM elements
+    minTempElement.innerHTML = `<p>Lowest: ${minTemperature}°C</p>`;
+    maxTempElement.innerHTML = `<p>Highest: ${maxTemperature}°C</p>`;
+  } else {
+    // Handle the case where the API doesn't provide min and max temperature data
+    console.log('API does not provide min and max temperature data');
+  }
 };
+
 /*
 A helper function to run the functions required to get the weather and forecast of a location
 */
 const getWeather = (loc) => {
   getCurrentWeather(loc);
-  getSunTime(loc);
   getForecast(loc);
-  getMinMaxTemp(loc)
 }
 
 getLocation();

@@ -1,13 +1,12 @@
-# Weather App
+# Banana Weather
 
-Replace this readme with your own information about your project.
+A weather app project to practice fetching and displaying data from an API (OpenWeather). Developed by Preeti and Daniel!
 
-Start by briefly describing the assignment in a sentence or two. Keep it short and to the point.
+## Features and Solutions
 
-## The problem
+First the app gets a location, it will first check if there is any value in the search bar to search for, if there is no location in the search bar (The default when you first access the site) it will try to access the location of the browser, if it can't get access to your location from the browser it takes stockholm as a default.
+The data is provided from the weather API provided by OpenWeather. Once it has fetched the data it displays the location name, temperature, weather, amount of hours of sunlight, the lowest/highest temperature of the day and a little comment depending on the weather. The theme also changes depending on the weather data.
+A 5 day forecast is received from the forecast API and it displays the information such as type of weather, temperature and wind.
 
-Describe how you approached to problem, and what tools and techniques you used to solve it. How did you plan? What technologies did you use? If you had more time, what would be next?
-
-## View it live
-
-Every project should be deployed somewhere. Be sure to include the link to the deployed project so that the viewer can click around and see what it's all about.
+## Demo
+A deployed version on Netlify can be found on the following link: https://keen-blancmange-daa7bb.netlify.app/
